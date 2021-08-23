@@ -17,6 +17,7 @@ const SUBSCRIBE_TO_LOCATION_BY_ID = gql`
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
   <GoogleMap
     defaultZoom={13}
+    center={{ lat: props.latitude, lng: props.longitude }}
     defaultCenter={{ lat: props.latitude, lng: props.longitude }}
   >
     <Marker position={{ lat: props.latitude, lng: props.longitude}} />
