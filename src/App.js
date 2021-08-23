@@ -19,7 +19,7 @@ const App = () => {
   console.log(match)
   const { data } = useQuery(GET_LOCATION_BY_ID, {
     variables: {id: match.params.id},
-    pollInterval: 1000,
+    pollInterval: 5000,
   })
   return (
     <div>
