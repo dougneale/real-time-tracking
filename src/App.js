@@ -1,10 +1,10 @@
 import React  from "react"
 import "./index.css"
-import { gql, useQuery } from "@apollo/client";
+import { gql, useSubscription } from "@apollo/client";
 import { useRouteMatch } from 'react-router-dom'
 
-const GET_LOCATION_BY_ID = gql`
-  query GetLocationById($id: uuid!) {
+const SUBSCRIBE_TO_LOCATION_BY_ID = gql`
+  subscription SubscribeToLocationById($id: uuid!) {
     location_by_pk(id: $id) {
       id
       latitude
@@ -14,12 +14,9 @@ const GET_LOCATION_BY_ID = gql`
 `;
 
 const App = () => {
-
   let match = useRouteMatch("/:id");
-  console.log(match)
-  const { data } = useQuery(GET_LOCATION_BY_ID, {
+  const { data } = useSubscription(SUBSCRIBE_TO_LOCATION_BY_ID, {
     variables: {id: match.params.id},
-    pollInterval: 5000,
   })
   return (
     <div>
