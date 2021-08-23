@@ -1,50 +1,37 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+import React  from "react"
+import "./index.css"
+import { gql, useQuery } from "@apollo/client";
+import { useRouteMatch } from 'react-router-dom'
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+const GET_LOCATION_BY_ID = gql`
+  query GetLocationById($id: uuid!) {
+    location_by_pk(id: $id) {
+      id
+      latitude
+      longitude
+    }
   }
+`;
 
-  handleClick = api => e => {
-    e.preventDefault()
+const App = () => {
 
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
-
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
-  }
-}
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
+  let match = useRouteMatch("/:id");
+  console.log(match)
+  const { data } = useQuery(GET_LOCATION_BY_ID, {
+    variables: {id: match.params.id},
+    pollInterval: 1000,
+  })
+  return (
+    <div>
+      {data &&
+      <div className="p-10 space-y-10">
+          <p>Id: <br />{data.location_by_pk.id}</p>
+          <p>Latitude: <br />{data.location_by_pk.latitude}</p>
+          <p>Longitude: <br />{data.location_by_pk.longitude}</p>
+        </div>
+      }
       </div>
-    )
-  }
+  )
 }
 
 export default App
